@@ -53,16 +53,26 @@ export function generateSampleCsv(columns: ColumnConfig[]): string {
     } else if (errorCase === 2) {
       // Under minimum
       const minColIdx = columns.findIndex(c => c.type === 'number' && c.min !== undefined);
-      if (minColIdx !== -1) row[minColIdx] = String(columns[minColIdx].min! - 100);
+      if (minColIdx !== -1) {
+        const col = columns[minColIdx];
+        if (col.type === 'number') {
+          row[minColIdx] = String(col.min! - 100);
+        }
+      }
       else row[0] = '!!!INVALID!!!';
     } else if (errorCase === 3) {
       // Over maximum
       const maxColIdx = columns.findIndex(c => c.type === 'number' && c.max !== undefined);
-      if (maxColIdx !== -1) row[maxColIdx] = String(columns[maxColIdx].max! + 100);
+      if (maxColIdx !== -1) {
+        const col = columns[maxColIdx];
+        if (col.type === 'number') {
+          row[maxColIdx] = String(col.max! + 100);
+        }
+      }
       else row[0] = '!!!INVALID!!!';
     } else if (errorCase === 4) {
       // Invalid enum (not in allowedValues)
-      const enumColIdx = columns.findIndex(c => c.allowedValues && c.allowedValues.length > 0);
+      const enumColIdx = columns.findIndex(c => c.type === 'string' && c.allowedValues && c.allowedValues.length > 0);
       if (enumColIdx !== -1) row[enumColIdx] = 'UNAUTHORIZED_VALUE';
       else row[0] = '!!!INVALID!!!';
     } else if (errorCase === 5) {

@@ -183,19 +183,20 @@ export default function ConfigurationSidebar({ config, onChange, open, onClose, 
                       if (newType === col.type) return;
                       const newCol = { ...col, type: newType };
                       if (newType !== 'string') {
-                        delete newCol.regex;
+                        if ('regex' in newCol) delete newCol.regex;
                       }
                       if (newType !== 'number') {
-                        delete newCol.min;
-                        delete newCol.max;
+                        if ('min' in newCol) delete newCol.min;
+                        if ('max' in newCol) delete newCol.max;
                       }
                       if (newType !== 'boolean') {
-                        delete newCol.trueValues;
+                        if ('trueValues' in newCol) delete newCol.trueValues;
+                        if ('falseValues' in newCol) delete newCol.falseValues;
                       }
-                      delete newCol.allowedValues;
+                      if ('allowedValues' in newCol) delete newCol.allowedValues;
                       delete newCol.defaultValue;
-
-                      updateColumnConfig(idx, newCol);
+                      
+                      updateColumnConfig(idx, newCol as ColumnConfig);
                     }}
                   >
                     <MenuItem value="string">String</MenuItem>

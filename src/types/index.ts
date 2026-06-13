@@ -17,7 +17,7 @@ type TypeBooleanConfig = {
   falseValues?: string[];
 }
 
-type TypeConfig = TypeStringConfig | TypeNumberConfig | TypeBooleanConfig;
+
 
 type Transformer<T = any> = (
   value: T,
@@ -40,7 +40,10 @@ type BaseColumnConfig = {
   customValidation?: Validator; // if false record will be rejected
 }
 
-export type ColumnConfig = BaseColumnConfig & TypeConfig;
+export type ColumnConfig = 
+  | (BaseColumnConfig & TypeStringConfig)
+  | (BaseColumnConfig & TypeNumberConfig)
+  | (BaseColumnConfig & TypeBooleanConfig);
 
 
 export type IngestionController = {

@@ -67,7 +67,7 @@ export default function App() {
 
   const handleStart = async () => {
     if (!file) return;
-    const res = await startIngestion(file) as any;
+    const res = await startIngestion(file);
     if (res?.headersMismatch) {
       setHeadersMismatch(res.headersMismatch);
     }
