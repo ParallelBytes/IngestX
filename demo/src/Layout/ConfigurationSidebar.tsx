@@ -24,7 +24,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { materialLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import type { ColumnConfig } from 'ingestx';
+import type { ColumnConfig } from '@parallelbytes/ingestx';
 import type { DemoConfig } from '../types';
 import { generateSampleCsv, downloadBlobAsCsv } from '../utils/generateSampleCsv';
 

@@ -30,7 +30,7 @@ export default function InvalidRowsTable({ invalidRows, errorsData }: InvalidRow
 
             return {
                 id: `invalid-row-${actualRowIndex ?? index}`,
-                rowNumber: actualRowIndex !== undefined ? actualRowIndex + 1 : index + 1,
+                rowNumber: typeof actualRowIndex === 'number' ? actualRowIndex + 1 : index + 1,
                 errorMessage: errorMsg,
             };
         });

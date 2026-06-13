@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Box, Container, Typography, CssBaseline, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useIngestion } from 'ingestx/react';
-import type { ColumnConfig } from 'ingestx';
+import { useIngestion } from '@parallelbytes/ingestx/react';
+import type { ColumnConfig } from '@parallelbytes/ingestx';
 
 import UploadSection from './Components/UploadSection';
 import ProcessingControls from './Components/ProcessingControls';

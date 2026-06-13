@@ -1,4 +1,4 @@
-import type { ColumnConfig } from 'ingestx';
+import type { ColumnConfig } from '@parallelbytes/ingestx';
 
 export function generateSampleCsv(columns: ColumnConfig[]): string {
   const headers = columns.map(c => c.displayNames[0] || c.key);

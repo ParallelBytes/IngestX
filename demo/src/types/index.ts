@@ -1,4 +1,4 @@
-import type { ColumnConfig } from "ingestx";
+import type { ColumnConfig } from "@parallelbytes/ingestx";
 
 export type DemoConfig = {
     chunkSize: number;
