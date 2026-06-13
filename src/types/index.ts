@@ -14,6 +14,7 @@ type TypeNumberConfig = {
 type TypeBooleanConfig = {
   type: "boolean";
   trueValues?: string[];
+  falseValues?: string[];
 }
 
 type TypeConfig = TypeStringConfig | TypeNumberConfig | TypeBooleanConfig;
@@ -59,12 +60,6 @@ export type HeadersMismatch = {
   headersSent: string[];
 };
 
-export type ChunkResult = {
-  validRows: Record<string, any>[];
-  invalidRows: Record<string, any>[];
-  rowWiseErrors: RowValidationError[];
-};
-
 export type ErrorsData = {
   headersMismatch?: HeadersMismatch;
   rowWiseErrors: RowValidationError[];
@@ -80,8 +75,7 @@ export type FinalOutput = {
 };
 
 export type IngestionOptions = {
-  shouldAccumulateValidRows?: boolean;
-  shouldAccumulateInvalidRows?: boolean;
+  shouldAccumulateResult?: boolean;
   trimValues?: boolean;
   trimHeaders?: boolean;
   caseInsensitiveHeaders?: boolean;
@@ -91,7 +85,7 @@ export type ProcessRowsInChunksOptions = {
   rows: Record<string, any>[];
   columnConfigs: ColumnConfig[];
   chunkSize: number;
-  onChunkProcessed: (result: ChunkResult) => Promise<void>;
+  onChunkProcessed: (result: FinalOutput) => Promise<void>;
   ingestionController: IngestionController;
   options?: IngestionOptions;
 };
