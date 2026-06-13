@@ -65,5 +65,27 @@
     "dist",
     "README.md",
     "package.json"
+  ],
+  "keywords": [
+    "ingestx",
+    "react",
+    "reactjs",
+    "node",
+    "nodejs",
+    "typescript",
+    "csv",
+    "excel",
+    "xlsx",
+    "spreadsheet",
+    "parser",
+    "data-import",
+    "bulk-import",
+    "data-validation",
+    "file-upload",
+    "streaming",
+    "chunked-processing",
+    "large-files",
+    "etl",
+    "ingestion"
   ]
 }
