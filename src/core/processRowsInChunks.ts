@@ -1,4 +1,4 @@
-import { ChunkResult, FinalOutput, RowValidationError, ProcessRowsInChunksOptions } from "../types";
+import { FinalOutput, RowValidationError, ProcessRowsInChunksOptions } from "../types";
 import { validateRow } from "./validateRow";
 import { wait } from "../utils";
 
@@ -39,10 +39,15 @@ export async function processRowsInChunks({
     }
 
     const chunk = rows.slice(i, i + chunkSize);
-    const chunkResult: ChunkResult = {
+    const chunkResult: FinalOutput = {
+      totalRows: 0,
+      validRowsCount: 0,
+      invalidRowsCount: 0,
       validRows: [],
       invalidRows: [],
-      rowWiseErrors: [],
+      errorsData: {
+        rowWiseErrors: [],
+      },
     };
 
     // Process each row in chunk
@@ -54,12 +59,12 @@ export async function processRowsInChunks({
 
       if (isValid) {
         chunkResult.validRows.push(processedRow);
-        if (options?.shouldAccumulateValidRows !== false) {
+        if (options?.shouldAccumulateResult !== false) {
           finalValidRows.push(processedRow);
         }
       } else {
         chunkResult.invalidRows.push(processedRow);
-        if (options?.shouldAccumulateInvalidRows !== false) {
+        if (options?.shouldAccumulateResult !== false) {
           finalInvalidRows.push(processedRow);
         }
 
@@ -68,7 +73,7 @@ export async function processRowsInChunks({
             rowIndex: actualRowIndex,
             ...err,
           };
-          chunkResult.rowWiseErrors.push(rowError);
+          chunkResult.errorsData.rowWiseErrors.push(rowError);
           finalRowWiseErrors.push(rowError);
         }
       }

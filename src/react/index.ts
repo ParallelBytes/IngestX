@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { ColumnConfig, FinalOutput, IngestionController, ChunkResult, IngestionOptions } from "../types";
+import { ColumnConfig, FinalOutput, IngestionController, IngestionOptions, ErrorsData } from "../types";
 import { processRowsInChunks } from "../core/processRowsInChunks";
 import { normalizeHeaders } from "../core/normalizeHeaders";
 import { parseCsvToRows, parseExcelToRows } from "../adapters";
@@ -45,7 +45,6 @@ export function useIngestion({ columnConfigs, chunkSize = 500, options }: UseIng
       setIsProcessing(true);
       setIsPaused(false);
       setProgress(0);
-      setResult(null);
       setError(null);
       controllerRef.current = { isPaused: false, isCancelled: false };
 
@@ -88,17 +87,46 @@ export function useIngestion({ columnConfigs, chunkSize = 500, options }: UseIng
         setError("Headers mismatch");
         setIsProcessing(false);
         // Could return headersMismatch here via state if needed by UI
-        return { headersMismatch };
+        return { headersMismatch } as { headersMismatch: any };
       }
 
       const rowsToProcess = normalizedRows ? normalizedRows(parsedRows) : parsedRows;
       const totalRows = rowsToProcess.length;
       let processedCount = 0;
+      let cumulativeValidCount = 0;
+      let cumulativeInvalidCount = 0;
 
-      const handleChunkProcessed = async (chunkResult: ChunkResult) => {
+      let cumulativeValidRows: Record<string, any>[] = [];
+      let cumulativeInvalidRows: Record<string, any>[] = [];
+      let cumulativeErrorsData: ErrorsData = { rowWiseErrors: [] };
+
+      const handleChunkProcessed = async (chunkResult: FinalOutput) => {
+        cumulativeValidCount += chunkResult.validRows.length;
+        cumulativeInvalidCount += chunkResult.invalidRows.length;
         processedCount += chunkResult.validRows.length + chunkResult.invalidRows.length;
+
+        if (options?.shouldAccumulateResult) {
+          cumulativeValidRows = [...cumulativeValidRows, ...chunkResult.validRows];
+        }
+        if (options?.shouldAccumulateResult) {
+          cumulativeInvalidRows = [...cumulativeInvalidRows, ...chunkResult.invalidRows];
+          cumulativeErrorsData = {
+            ...chunkResult.errorsData,
+            rowWiseErrors: [...cumulativeErrorsData.rowWiseErrors, ...chunkResult.errorsData.rowWiseErrors]
+          };
+        }
+
         const currentProgress = Math.round((processedCount / totalRows) * 100);
         setProgress(currentProgress);
+
+        setResult({
+          totalRows,
+          validRowsCount: cumulativeValidCount,
+          invalidRowsCount: cumulativeInvalidCount,
+          validRows: options?.shouldAccumulateResult ? cumulativeValidRows : chunkResult.validRows,
+          invalidRows: options?.shouldAccumulateResult ? cumulativeInvalidRows : chunkResult.invalidRows,
+          errorsData: options?.shouldAccumulateResult ? cumulativeErrorsData : chunkResult.errorsData,
+        });
 
         // Let the event loop breathe to allow React renders
         await new Promise((resolve) => setTimeout(resolve, 0));
@@ -114,8 +142,10 @@ export function useIngestion({ columnConfigs, chunkSize = 500, options }: UseIng
           options,
         });
 
-        if (!controllerRef.current.isCancelled) {
+        if (!controllerRef.current.isCancelled && options?.shouldAccumulateResult) {
           setResult(output);
+        }
+        if (!controllerRef.current.isCancelled) {
           setIsProcessing(false);
         }
       } catch (err: any) {
@@ -123,7 +153,7 @@ export function useIngestion({ columnConfigs, chunkSize = 500, options }: UseIng
         setIsProcessing(false);
       }
     },
-    [columnConfigs, chunkSize]
+    [columnConfigs, chunkSize, options]
   );
 
   return {

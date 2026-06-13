@@ -1,4 +1,4 @@
-import { ColumnConfig, FinalOutput, IngestionController, ChunkResult, IngestionOptions } from "../types";
+import { ColumnConfig, FinalOutput, IngestionController, IngestionOptions } from "../types";
 import { processRowsInChunks } from "../core/processRowsInChunks";
 import { normalizeHeaders } from "../core/normalizeHeaders";
 import { parseCsvToRows, parseExcelToRows } from "../adapters";
@@ -8,7 +8,7 @@ type NodeIngestionOptions = {
   fileType?: "csv" | "xlsx" | "xls";
   columnConfigs: ColumnConfig[];
   chunkSize?: number;
-  onChunkProcessed?: (result: ChunkResult) => Promise<void>;
+  onChunkProcessed?: (result: FinalOutput) => Promise<void>;
   ingestionController?: IngestionController;
   options?: IngestionOptions;
 };
@@ -21,7 +21,7 @@ export async function ingestFileNode({
   fileType = "csv",
   columnConfigs,
   chunkSize = 500,
-  onChunkProcessed = async () => {},
+  onChunkProcessed = async () => { },
   ingestionController = { isPaused: false, isCancelled: false },
   options,
 }: NodeIngestionOptions): Promise<FinalOutput | { error: string; headersMismatch?: any }> {
@@ -37,7 +37,7 @@ export async function ingestFileNode({
     }
 
     if (parsedRows.length === 0) {
-       return { error: "No rows found or parsed successfully." };
+      return { error: "No rows found or parsed successfully." };
     }
 
     // 2. Validate Headers
@@ -45,9 +45,9 @@ export async function ingestFileNode({
     const { normalizedRows, headersMismatch } = normalizeHeaders(sentHeaders, columnConfigs, options);
 
     if (headersMismatch) {
-      return { 
+      return {
         error: "Headers mismatch",
-        headersMismatch 
+        headersMismatch
       };
     }
 
