@@ -16,11 +16,10 @@ Ingestx is designed to handle massive files smoothly by parsing in chunks, offer
 ## Installation
 
 ```bash
-npm install @parallelbytes/ingestx papaparse xlsx
+npm install @parallelbytes/ingestx
 # or
-yarn add @parallelbytes/ingestx papaparse xlsx
+yarn add @parallelbytes/ingestx
 ```
-*(Note: `papaparse` and `xlsx` are peer dependencies used under the hood for parsing).*
 
 ## Quick Start (React)
 
