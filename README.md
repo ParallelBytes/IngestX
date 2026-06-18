@@ -4,6 +4,8 @@ A powerful, headless data ingestion engine for tabular data (CSV and Excel) in J
 
 Ingestx is designed to handle massive files smoothly by parsing in chunks, offering built-in data validation, schema mapping, and execution control (pause, resume, cancel). Since it's completely headless, you bring your own UI and we handle the heavy lifting!
 
+Demo:- [ingestx.vercel.app](https://ingestx.vercel.app/)
+
 ## Features
 
 - **📊 Format Support:** Seamlessly process CSV and Excel (`.xlsx`, `.xls`) files.
